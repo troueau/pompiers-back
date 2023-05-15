@@ -1,0 +1,31 @@
+stages: # Liste des stages, exécutés dans cet ordre.
+  - build
+  - deploy
+
+build-node-job: # Ce job est exécuté dans le stage de build, qui s'exécute en premier.
+  image: node:18.14
+  stage: build
+  script:
+    - echo "Building image..."
+    - npm i
+    - npm run build
+    - echo "Built."
+  only:
+    - merge_requests
+
+deploy-node-job: # Ce job est exécuté dans le stage de déploiement, qui s'exécute en dernier.
+  tags:
+    - deploy-back
+  stage: deploy
+  script:
+    - echo "Deploying..."
+    - docker rm -f pompiers-mongo-db || true # Suppression du container existant
+    - docker rm -f pompiers-back || true # Suppression du container existant
+    - docker run -d --name pompiers-mongo-db -p 27017:27017 -v mongodbdata:/data/db mongo:4.4.6 # Lancement du container mongo
+    - docker build -t pompiers-back --build-arg NODE_ENV=production -f docker/Dockerfile.Prod . # Construction de l'image de l'application
+    - docker run -d --name pompiers-back -p 80:8085 --link pompiers-mongo-db:mongo pompiers-back # Lancement du container de l'application``
+    - docker rmi $(docker images -f "dangling=true" -q) || true # Suppression des images intermédiaires
+    - echo "Deployed successfully!"
+  only:
+    - develop
+    - master

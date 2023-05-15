@@ -1,0 +1,14 @@
+FROM node:18.14
+
+WORKDIR /usr/src/service
+COPY . .
+
+# Installation des dépendances
+RUN npm install
+# Installation de nodemon et ts-node en global
+RUN npm install -g nodemon && npm install -g ts-node
+# Installation de dépendances tierces
+RUN apt-get update && apt-get install -y ffmpeg && apt-get install -y imagemagick && apt-get install -y ghostscript
+
+
+CMD ["nodemon", "./src/app.ts"]

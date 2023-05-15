@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  mongo:
+    image: "mongo:latest"
+    container_name: pompiers-mongo-db
+    restart: always
+    ports:
+      - "27017:27017"
+    
+  back:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: pompiers-back
+    depends_on:
+      - mongo
+    links:
+      - mongo
+    volumes:
+      - ..:/usr/src/service
+    working_dir: /usr/src/service
+    command: nodemon ./src/app.ts
+    ports:
+      - "8085:8085"
