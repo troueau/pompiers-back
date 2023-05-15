@@ -1,6 +1,8 @@
 # Back-end repository pour le projet POMPIER - Groupe D
 
-## Acceder au Back-end - Production
+Ce code est la brique back-end d'un projet de fin d'étude fait en Master 2 IL à l'ISTIC. Pour plus d'information, veuillez consulter la documentation à cette adresse : http://148.60.11.220/.
+
+## Acceder au Back-end - Production (avec le VPN de l'ISTIC)
 
 Vous pouvez retrouver les endpoints du back à cette adresse : http://148.60.11.163/
 
